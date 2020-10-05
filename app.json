@@ -1,0 +1,15 @@
+{
+    "id": "4606d1ee-9c83-499a-9dc7-84882dfd53b4",
+    "version": "0.0.1",
+    "requiredApiVersion": "^1.4.0",
+    "iconFile": "icon.png",
+    "author": {
+        "name": "Marco Cecchetti",
+        "homepage": "www.collaboraoffice.com",
+        "support": "www.collaboraoffice.com"
+    },
+    "name": "CollaboraRocketchat",
+    "nameSlug": "collaborarocketchat",
+    "classFile": "CollaboraRocketchatApp.ts",
+    "description": "Collabora Online integration"
+}
