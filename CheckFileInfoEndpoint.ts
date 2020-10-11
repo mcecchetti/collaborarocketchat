@@ -3,14 +3,19 @@ import { HttpStatusCode, IHttp, IModify, IPersistence, IRead } from '@rocket.cha
 import { ApiEndpoint, IApiEndpointInfo, IApiRequest, IApiResponse } from '@rocket.chat/apps-engine/definition/api';
 
 export class CheckFileInfoEndpoint extends ApiEndpoint {
-    public path = 'wopi/files';
+    public path = '/wopi/files/:fileId';
 
     public async get(
         request: IApiRequest, endpoint: IApiEndpointInfo, read: IRead, modify: IModify, http: IHttp, persis: IPersistence,
     ): Promise<IApiResponse> {
 
-        const fileId = 'Sdf9X2gwpZyFrHrNF';
-        // const fileId = 'ug2YfQaaKde7nP5pX';
+        const fileId = request.params.fileId;
+        if (!fileId) {
+            return {
+                status: HttpStatusCode.NOT_FOUND,
+                content: `No file id has been specified`,
+            };
+        }
 
         const uploadReader = read.getUploadReader();
         const uploadInfo = await uploadReader.getById(fileId);
@@ -21,7 +26,7 @@ export class CheckFileInfoEndpoint extends ApiEndpoint {
             };
         }
 
-        console.log(`CheckFileInfoEndpoint: upload info: ${ JSON.stringify(uploadInfo) }`);
+        console.log(`CheckFileInfoEndpoint: upload info: ${ JSON.stringify(request) }`);
 
         const wopiFileInfo = {
             BaseFileName: uploadInfo.name,
