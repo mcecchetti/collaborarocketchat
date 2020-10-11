@@ -25,8 +25,8 @@ export class GetFileEndpoint extends ApiEndpoint {
                 content: `Upload ${ fileId } could not be found`,
             };
         }
-
-        return this.success(fileBuffer.toString('ascii'));
+        // console.log(`GetFileEndpoint.get: ${ fileBuffer. }`)
+        return this.success(fileBuffer);
     }
 
     public async post(
