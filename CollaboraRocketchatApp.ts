@@ -10,6 +10,7 @@ import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
 import { ISetting, SettingType } from '@rocket.chat/apps-engine/definition/settings';
 
 import { CheckFileInfoEndpoint } from './CheckFileInfoEndpoint';
+import { GetCollaboraOnlineFileURL } from './GetCollaboraOnlineFileURL';
 import { GetFileEndpoint } from './GetFileEndpoint';
 
 export class CollaboraRocketchatApp extends App {
@@ -22,7 +23,10 @@ export class CollaboraRocketchatApp extends App {
         await configuration.api.provideApi({
             visibility: ApiVisibility.PUBLIC,
             security: ApiSecurity.UNSECURE,
-            endpoints: [new CheckFileInfoEndpoint(this), new GetFileEndpoint(this)],
+            endpoints: [
+                new CheckFileInfoEndpoint(this),
+                new GetFileEndpoint(this),
+                new GetCollaboraOnlineFileURL(this),
         });
 
         // Register Settings
