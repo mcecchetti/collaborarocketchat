@@ -12,6 +12,8 @@ import { ISetting, SettingType } from '@rocket.chat/apps-engine/definition/setti
 import { CheckFileInfoEndpoint } from './CheckFileInfoEndpoint';
 import { GetCollaboraOnlineFileURL } from './GetCollaboraOnlineFileURL';
 import { GetFileEndpoint } from './GetFileEndpoint';
+import { UpdateWOPIFileMapEndpoint } from './UpdateWOPIFileMapEndpoint';
+import { Utils } from './Utils';
 
 export class CollaboraRocketchatApp extends App {
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
@@ -27,6 +29,8 @@ export class CollaboraRocketchatApp extends App {
                 new CheckFileInfoEndpoint(this),
                 new GetFileEndpoint(this),
                 new GetCollaboraOnlineFileURL(this),
+                new UpdateWOPIFileMapEndpoint(this),
+            ],
         });
 
         // Register Settings
@@ -50,7 +54,7 @@ export class CollaboraRocketchatApp extends App {
         console.log(`CollaboraRocketchatApp.onSettingUpdated: ${ JSON.stringify(setting) }`);
         if (setting.id === 'OnlineServerUrl') {
             const wopiAddress = setting.value || setting.packageValue;
-            console.log(`onSettingUpdated: wopiAddress: ${ wopiAddress }`);
+            await Utils.updateWopiFileMap(this.getID(), read, http, wopiAddress);
         }
     }
 }

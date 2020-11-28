@@ -1,5 +1,8 @@
 import { HttpStatusCode, IHttp, IRead } from '@rocket.chat/apps-engine/definition/accessors';
 import { IApiRequest, IApiResponse } from '@rocket.chat/apps-engine/definition/api';
+import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
+
+export const WOPI_FILE_MAP = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, 'wopi-file-map');
 
 export class Utils {
     public static async checkWopiRequest(request: IApiRequest, read: IRead, http: IHttp): Promise<IApiResponse> {
@@ -83,5 +86,35 @@ export class Utils {
                 userInfo,
             },
         };
+    }
+
+    public static async updateWopiFileMap(apiId: string, read: IRead, http: IHttp, wopiAddress?: string): Promise<boolean> {
+        if (!wopiAddress || wopiAddress.length === 0) {
+            const settings = read.getEnvironmentReader().getSettings();
+            const setting = await settings.getById('OnlineServerUrl');
+            if (!settings) {
+                return false;
+            }
+            wopiAddress = setting.value || setting.packageValue;
+        }
+        const siteSetting = await read.getEnvironmentReader().getServerSettings().getOneById('Site_Url');
+        if (!siteSetting) {
+            return false;
+        }
+        console.log(`Utils.updateWopifileMap: siteSetting: ${ JSON.stringify(siteSetting) }`);
+        const request = {
+            content: wopiAddress,
+        };
+        const response = await http.post(`${ siteSetting.value }/api/apps/public/${ apiId }/wopiFileMap.update`, request);
+        console.log(`Utils.updateWopifileMap: response status: ${ response.statusCode }`);
+        return response.statusCode === HttpStatusCode.OK;
+    }
+
+    public static getFileExtension(fileName: string): string {
+        const nameParts = fileName.split('.');
+        if (nameParts.length < 2 || nameParts[nameParts.length - 1].length === 0) {
+            return '';
+        }
+        return nameParts[nameParts.length - 1];
     }
 }
